@@ -1,4 +1,9 @@
 defmodule Membrane.Realtimer do
+  @moduledoc """
+  Sends buffers to the output in real time, according to buffers' timestamps.
+
+  If buffers come in slower than realtime, they're sent as they come in.
+  """
   use Membrane.Filter
 
   def_input_pad :input, caps: :any, demand_unit: :buffers

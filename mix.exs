@@ -14,11 +14,11 @@ defmodule Membrane.Realtimer.Plugin.Mixfile do
       deps: deps(),
 
       # hex
-      description: "Template Plugin for Membrane Multimedia Framework",
+      description: "Membrane element limiting playback speed to realtime",
       package: package(),
 
       # docs
-      name: "Membrane Plugin: Template",
+      name: "Membrane Realtimer plugin",
       source_url: @github_url,
       homepage_url: "https://membraneframework.org",
       docs: docs()
@@ -57,9 +57,8 @@ defmodule Membrane.Realtimer.Plugin.Mixfile do
   defp docs do
     [
       main: "readme",
-      extras: ["README.md"],
-      source_ref: "v#{@version}",
-      nest_modules_by_prefix: [Membrane.Template]
+      extras: ["README.md", "LICENSE"],
+      source_ref: "v#{@version}"
     ]
   end
 end
