@@ -1,11 +1,11 @@
-defmodule Membrane.FunnelTest do
+defmodule Membrane.RealtimerTest do
   use ExUnit.Case
 
   import Membrane.Testing.Assertions
 
   alias Membrane.{Buffer, Testing, Time, Realtimer}
 
-  test "Collects multiple inputs" do
+  test "Limits playback speed to realtime" do
     buffers = [
       %Buffer{payload: 0, metadata: %{timestamp: 0}},
       %Buffer{payload: 1, metadata: %{timestamp: Time.milliseconds(100)}}

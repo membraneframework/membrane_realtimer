@@ -2,7 +2,7 @@ defmodule Membrane.Realtimer.Plugin.Mixfile do
   use Mix.Project
 
   @version "0.1.0"
-  @github_url "https://github.com/membraneframework/membrane_template_plugin"
+  @github_url "https://github.com/membraneframework/membrane_realtimer_plugin"
 
   def project do
     [
@@ -14,7 +14,7 @@ defmodule Membrane.Realtimer.Plugin.Mixfile do
       deps: deps(),
 
       # hex
-      description: "Membrane element limiting playback speed to realtime",
+      description: "Membrane plugin for limiting playback speed to realtime",
       package: package(),
 
       # docs
