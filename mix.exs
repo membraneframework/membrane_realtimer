@@ -1,12 +1,12 @@
-defmodule Membrane.Template.Mixfile do
+defmodule Membrane.Realtimer.Plugin.Mixfile do
   use Mix.Project
 
   @version "0.1.0"
-  @github_url "https://github.com/membraneframework/membrane_template_plugin"
+  @github_url "https://github.com/membraneframework/membrane_realtimer_plugin"
 
   def project do
     [
-      app: :membrane_template_plugin,
+      app: :membrane_realtimer_plugin,
       version: @version,
       elixir: "~> 1.9",
       elixirc_paths: elixirc_paths(Mix.env()),
@@ -14,11 +14,11 @@ defmodule Membrane.Template.Mixfile do
       deps: deps(),
 
       # hex
-      description: "Template Plugin for Membrane Multimedia Framework",
+      description: "Membrane plugin for limiting playback speed to realtime",
       package: package(),
 
       # docs
-      name: "Membrane Plugin: Template",
+      name: "Membrane Realtimer plugin",
       source_url: @github_url,
       homepage_url: "https://membraneframework.org",
       docs: docs()
@@ -36,9 +36,9 @@ defmodule Membrane.Template.Mixfile do
 
   defp deps do
     [
-      {:membrane_core, "~> 0.6.0"},
+      {:membrane_core, "~> 0.6.1"},
       {:ex_doc, "~> 0.22", only: :dev, runtime: false},
-      {:dialyxir, "~> 1.0.0", only: :dev, runtime: false},
+      {:dialyxir, "~> 1.0", only: :dev, runtime: false},
       {:credo, "~> 1.4", only: :dev, runtime: false}
     ]
   end
@@ -57,9 +57,8 @@ defmodule Membrane.Template.Mixfile do
   defp docs do
     [
       main: "readme",
-      extras: ["README.md"],
-      source_ref: "v#{@version}",
-      nest_modules_by_prefix: [Membrane.Template]
+      extras: ["README.md", "LICENSE"],
+      source_ref: "v#{@version}"
     ]
   end
 end
