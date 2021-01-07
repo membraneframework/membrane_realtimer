@@ -75,6 +75,6 @@ defmodule Membrane.Realtimer do
 
   @impl true
   def handle_playing_to_prepared(_ctx, state) do
-    {{:ok, stop_timer: :timer}, %{state | timestamp: 0}}
+    {{:ok, stop_timer: :timer}, %{state | previous_timestamp: 0}}
   end
 end
