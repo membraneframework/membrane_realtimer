@@ -28,5 +28,6 @@ defmodule Membrane.RealtimerTest do
     assert_sink_buffer(pipeline, :sink, %Buffer{payload: 1}, 20)
     assert_end_of_stream(pipeline, :sink)
     refute_sink_buffer(pipeline, :sink, _buffer, 0)
+    Testing.Pipeline.stop_and_terminate(pipeline, blocking?: true)
   end
 end
