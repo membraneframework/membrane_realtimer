@@ -6,6 +6,8 @@ defmodule Membrane.Realtimer do
   """
   use Membrane.Filter
 
+  alias Membrane.Buffer
+
   def_input_pad :input, caps: :any, demand_unit: :buffers
   def_output_pad :output, caps: :any, mode: :push
 
@@ -22,11 +24,11 @@ defmodule Membrane.Realtimer do
   @impl true
   def handle_process(:input, buffer, _ctx, state) do
     use Ratio
-    interval = buffer.metadata.timestamp - state.previous_timestamp
+    interval = Buffer.get_dts_or_pts(buffer) - state.previous_timestamp
 
     state = %{
       state
-      | previous_timestamp: buffer.metadata.timestamp,
+      | previous_timestamp: Buffer.get_dts_or_pts(buffer),
         tick_actions: [buffer: {:output, buffer}] ++ state.tick_actions
     }
 
