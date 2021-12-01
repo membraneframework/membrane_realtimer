@@ -7,8 +7,8 @@ defmodule Membrane.RealtimerTest do
 
   test "Limits playback speed to realtime" do
     buffers = [
-      %Buffer{payload: 0, metadata: %{timestamp: 0}},
-      %Buffer{payload: 1, metadata: %{timestamp: Time.milliseconds(100)}}
+      %Buffer{pts: 0, payload: 0},
+      %Buffer{pts: Time.milliseconds(100), payload: 1}
     ]
 
     {:ok, pipeline} =
