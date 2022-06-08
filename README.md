@@ -15,7 +15,7 @@ The package can be installed by adding `membrane_realtimer_plugin` to your list 
 ```elixir
 def deps do
   [
-    {:membrane_realtimer_plugin, "~> 0.4.0"}
+    {:membrane_realtimer_plugin, "~> 0.5.0"}
   ]
 end
 ```
@@ -57,7 +57,7 @@ defmodule Example.Pipeline do
       ]
     }
 
-    {{:ok, spec: spec}, %{}}
+    {{:ok, spec: spec, playback: :playing}, %{}}
   end
 end
 ```
