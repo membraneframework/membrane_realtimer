@@ -3,7 +3,7 @@ defmodule Membrane.RealtimerTest do
 
   import Membrane.Testing.Assertions
 
-  alias Membrane.{Buffer, Testing, Time, Realtimer}
+  alias Membrane.{Buffer, Realtimer, Testing, Time}
 
   test "Limits playback speed to realtime" do
     buffers = [
