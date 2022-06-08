@@ -57,7 +57,7 @@ defmodule Example.Pipeline do
       ]
     }
 
-    {{:ok, spec: spec}, %{}}
+    {{:ok, spec: spec, playback: :playing}, %{}}
   end
 end
 ```
