@@ -23,7 +23,7 @@ end
 ## Usage
 
 The following pipeline downloads a sample h264 video via HTTP and sends it in realtime via RTP.
-It requires [RTP plugin](https://github.com/membraneframework/membrane_rtp_plugin), [RTP H264 plugin](https://github.com/membraneframework/membrane_rtp_h264_plugin) and [UDP plugin](https://github.com/membraneframework/membrane_element_udp) to work.
+It requires [RTP plugin](https://github.com/membraneframework/membrane_rtp_plugin), [RTP H264 plugin](https://github.com/membraneframework/membrane_rtp_h264_plugin) and [UDP plugin](https://github.com/membraneframework/membrane_udp_plugin) to work.
 
 ```elixir
 defmodule Example.Pipeline do
@@ -36,20 +36,21 @@ defmodule Example.Pipeline do
     spec = %ParentSpec{
       children: [
         source: %Membrane.Hackney.Source{
-          location: "https://membraneframework.github.io/static/samples/ffmpeg-testsrc.h264"
+          location: "https://membraneframework.github.io/static/samples/ffmpeg-testsrc.h264",
+          hackney_opts: [follow_redirect: true]
         },
         parser: %Membrane.H264.FFmpeg.Parser{framerate: {30, 1}, alignment: :nal},
         rtp: Membrane.RTP.SessionBin,
         realtimer: Membrane.Realtimer,
-        sink: %Membrane.Element.UDP.Sink{
+        sink: %Membrane.UDP.Sink{
           destination_port_no: 5000,
           destination_address: {127, 0, 0, 1}
         }
       ],
       links: [
-        link(:src)
+        link(:source)
         |> to(:parser)
-        |> via_in(Pad.ref(:input, ssrc))
+        |> via_in(Pad.ref(:input, ssrc), options: [payloader: Membrane.RTP.H264.Payloader])
         |> to(:rtp)
         |> via_out(Pad.ref(:rtp_output, ssrc), options: [encoding: :H264])
         |> to(:realtimer)
