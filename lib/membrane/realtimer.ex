@@ -13,7 +13,7 @@ defmodule Membrane.Realtimer do
 
   @impl true
   def handle_init(_opts) do
-    {:ok, %{previous_timestamp: 0, tick_actions: []}}
+    {:ok, %{previous_timestamp: nil, tick_actions: []}}
   end
 
   @impl true
@@ -22,8 +22,14 @@ defmodule Membrane.Realtimer do
   end
 
   @impl true
+  def handle_process(:input, buffer, ctx, %{previous_timestamp: nil} = state) do
+    state = %{state | previous_timestamp: Buffer.get_dts_or_pts(buffer) || 0}
+    handle_process(:input, buffer, ctx, state)
+  end
+
   def handle_process(:input, buffer, _ctx, state) do
     use Ratio
+
     interval = Buffer.get_dts_or_pts(buffer) - state.previous_timestamp
 
     state = %{
@@ -77,6 +83,6 @@ defmodule Membrane.Realtimer do
 
   @impl true
   def handle_playing_to_prepared(_ctx, state) do
-    {{:ok, stop_timer: :timer}, %{state | previous_timestamp: 0}}
+    {{:ok, stop_timer: :timer}, %{state | previous_timestamp: nil}}
   end
 end
