@@ -37,7 +37,7 @@ defmodule Membrane.Realtimer.Plugin.Mixfile do
 
   defp deps do
     [
-      {:membrane_core, "~> 0.10"},
+      {:membrane_core, "~> 0.11"},
       {:ex_doc, "~> 0.28", only: :dev, runtime: false},
       {:dialyxir, "~> 1.1", only: :dev, runtime: false},
       {:credo, "~> 1.6", only: :dev, runtime: false}
