@@ -21,6 +21,8 @@ defmodule Membrane.Realtimer do
     {[start_timer: {:timer, :no_interval}, demand: {:input, 1}], state}
   end
 
+  # TODO: remove when https://github.com/membraneframework/membrane_core/pull/502 is merged and released
+  @dialyzer {:no_behaviours, {:handle_process, 4}}
   @impl true
   def handle_process(:input, buffer, _ctx, state) do
     use Ratio
@@ -53,7 +55,7 @@ defmodule Membrane.Realtimer do
 
   @impl true
   def handle_stream_format(:input, stream_format, _ctx, state) do
-    {[], %{state | tick_actions: [caps: {:output, stream_format}] ++ state.tick_actions}}
+    {[], %{state | tick_actions: [stream_format: {:output, stream_format}] ++ state.tick_actions}}
   end
 
   @impl true
