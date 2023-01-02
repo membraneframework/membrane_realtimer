@@ -6,19 +6,20 @@ defmodule Membrane.RealtimerTest do
   alias Membrane.{Buffer, Realtimer, Testing, Time}
 
   test "Limits playback speed to realtime" do
+    import Membrane.ChildrenSpec
+
     buffers = [
       %Buffer{pts: 0, payload: 0},
       %Buffer{pts: Time.milliseconds(100), payload: 1}
     ]
 
-    {:ok, pipeline} =
-      [
-        src1: %Testing.Source{output: Testing.Source.output_from_buffers(buffers)},
-        realtimer: Realtimer,
-        sink: Testing.Sink
-      ]
-      |> Membrane.ParentSpec.link_linear()
-      |> then(&Testing.Pipeline.start_link(links: &1))
+    structure = [
+      child(:src, %Testing.Source{output: Testing.Source.output_from_buffers(buffers)})
+      |> child(:realtimer, Realtimer)
+      |> child(:sink, Testing.Sink)
+    ]
+
+    pipeline = Testing.Pipeline.start_link_supervised!(structure: structure)
 
     assert_sink_buffer(pipeline, :sink, %Buffer{payload: 0})
     refute_sink_buffer(pipeline, :sink, _buffer, 90)

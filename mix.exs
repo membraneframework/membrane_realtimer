@@ -1,7 +1,7 @@
 defmodule Membrane.Realtimer.Plugin.Mixfile do
   use Mix.Project
 
-  @version "0.5.0"
+  @version "0.6.0"
   @github_url "https://github.com/membraneframework/membrane_realtimer_plugin"
 
   def project do
@@ -37,7 +37,7 @@ defmodule Membrane.Realtimer.Plugin.Mixfile do
 
   defp deps do
     [
-      {:membrane_core, "~> 0.10"},
+      {:membrane_core, "~> 0.11"},
       {:ex_doc, "~> 0.28", only: :dev, runtime: false},
       {:dialyxir, "~> 1.1", only: :dev, runtime: false},
       {:credo, "~> 1.6", only: :dev, runtime: false}
@@ -73,7 +73,8 @@ defmodule Membrane.Realtimer.Plugin.Mixfile do
       main: "readme",
       extras: ["README.md", "LICENSE"],
       formatters: ["html"],
-      source_ref: "v#{@version}"
+      source_ref: "v#{@version}",
+      nest_modules_by_prefix: [Membrane.Realtimer]
     ]
   end
 end
