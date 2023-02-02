@@ -76,9 +76,4 @@ defmodule Membrane.Realtimer do
 
     {actions, %{state | tick_actions: []}}
   end
-
-  @impl true
-  def handle_terminate_request(_ctx, state) do
-    {[stop_timer: :timer], %{state | previous_timestamp: 0}}
-  end
 end
