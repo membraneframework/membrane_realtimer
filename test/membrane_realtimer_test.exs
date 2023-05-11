@@ -28,4 +28,23 @@ defmodule Membrane.RealtimerTest do
     refute_sink_buffer(pipeline, :sink, _buffer, 0)
     Testing.Pipeline.terminate(pipeline, blocking?: true)
   end
+
+  test "Start following the time of the first buffer" do
+    import Membrane.ChildrenSpec
+
+    buffers = [
+      %Buffer{pts: Time.milliseconds(100), payload: 0}
+    ]
+
+    structure = [
+      child(:src, %Testing.Source{output: Testing.Source.output_from_buffers(buffers)})
+      |> child(:realtimer, Realtimer)
+      |> child(:sink, Testing.Sink)
+    ]
+
+    pipeline = Testing.Pipeline.start_link_supervised!(structure: structure)
+    assert_sink_buffer(pipeline, :sink, %Buffer{payload: 0}, 20)
+    assert_end_of_stream(pipeline, :sink)
+    Testing.Pipeline.terminate(pipeline, blocking?: true)
+  end
 end
