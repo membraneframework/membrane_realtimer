@@ -13,7 +13,7 @@ defmodule Membrane.Realtimer do
 
   @impl true
   def handle_init(_ctx, _opts) do
-    {[], %{previous_timestamp: 0, tick_actions: []}}
+    {[], %{previous_timestamp: nil, tick_actions: []}}
   end
 
   @impl true
@@ -24,8 +24,16 @@ defmodule Membrane.Realtimer do
   # TODO: remove when https://github.com/membraneframework/membrane_core/pull/502 is merged and released
   @dialyzer {:no_behaviours, {:handle_process, 4}}
   @impl true
+  def handle_process(:input, buffer, ctx, %{previous_timestamp: nil} = state) do
+    handle_process(:input, buffer, ctx, %{
+      state
+      | previous_timestamp: Buffer.get_dts_or_pts(buffer) || 0
+    })
+  end
+
   def handle_process(:input, buffer, _ctx, state) do
     use Ratio
+
     interval = Buffer.get_dts_or_pts(buffer) - state.previous_timestamp
 
     state = %{
