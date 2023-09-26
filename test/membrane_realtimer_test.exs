@@ -33,7 +33,7 @@ defmodule Membrane.RealtimerTest do
     import Membrane.ChildrenSpec
 
     buffers = [
-      %Buffer{pts: Time.milliseconds(100), payload: 0}
+      %Buffer{pts: Time.seconds(10), payload: 0}
     ]
 
     structure = [
@@ -43,7 +43,7 @@ defmodule Membrane.RealtimerTest do
     ]
 
     pipeline = Testing.Pipeline.start_link_supervised!(structure: structure)
-    assert_sink_buffer(pipeline, :sink, %Buffer{payload: 0}, 20)
+    assert_sink_buffer(pipeline, :sink, %Buffer{payload: 0}, 200)
     assert_end_of_stream(pipeline, :sink)
     Testing.Pipeline.terminate(pipeline, blocking?: true)
   end
