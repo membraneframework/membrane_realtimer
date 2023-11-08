@@ -8,8 +8,8 @@ defmodule Membrane.Realtimer do
 
   alias Membrane.Buffer
 
-  def_input_pad :input, accepted_format: _any, demand_unit: :buffers
-  def_output_pad :output, accepted_format: _any, mode: :push
+  def_input_pad :input, accepted_format: _any, flow_control: :manual, demand_unit: :buffers
+  def_output_pad :output, accepted_format: _any, flow_control: :push
 
   @impl true
   def handle_init(_ctx, _opts) do
@@ -21,19 +21,16 @@ defmodule Membrane.Realtimer do
     {[start_timer: {:timer, :no_interval}, demand: {:input, 1}], state}
   end
 
-  # TODO: remove when https://github.com/membraneframework/membrane_core/pull/502 is merged and released
-  @dialyzer {:no_behaviours, {:handle_process, 4}}
   @impl true
-  def handle_process(:input, buffer, ctx, %{previous_timestamp: nil} = state) do
-    handle_process(:input, buffer, ctx, %{
+  def handle_buffer(:input, buffer, ctx, %{previous_timestamp: nil} = state) do
+    handle_buffer(:input, buffer, ctx, %{
       state
       | previous_timestamp: Buffer.get_dts_or_pts(buffer) || 0
     })
   end
 
-  def handle_process(:input, buffer, _ctx, state) do
-    use Ratio
-
+  @impl true
+  def handle_buffer(:input, buffer, _ctx, state) do
     interval = Buffer.get_dts_or_pts(buffer) - state.previous_timestamp
 
     state = %{
