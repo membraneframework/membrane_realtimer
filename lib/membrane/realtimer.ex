@@ -35,7 +35,7 @@ defmodule Membrane.Realtimer do
   @impl true
   def handle_playing(_ctx, state) do
     maybe_start_timer =
-      if not state.start_on_first_buffer?, do: [start_timer: {:timer, :no_interval}], else: []
+      if state.start_on_first_buffer?, do: [], else: [start_timer: {:timer, :no_interval}]
 
     {maybe_start_timer ++ [demand: {:input, 1}], state}
   end
