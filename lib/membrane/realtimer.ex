@@ -11,14 +11,27 @@ defmodule Membrane.Realtimer do
   def_input_pad :input, accepted_format: _any, flow_control: :manual, demand_unit: :buffers
   def_output_pad :output, accepted_format: _any, flow_control: :push
 
+  def_options start_on_first_buffer?: [spec: boolean(), default: false, description: """
+    If true, the timer is started when the first buffer arrives.
+    Otherwise, the timer is started when the element goes into the `playing` playback.
+
+    Defaults to false.
+  """]
   @impl true
-  def handle_init(_ctx, _opts) do
-    {[], %{previous_timestamp: nil, tick_actions: []}}
+  def handle_init(_ctx, opts) do
+    {[], %{previous_timestamp: nil, tick_actions: [], start_on_first_buffer?: opts.start_on_first_buffer?}}
   end
 
   @impl true
   def handle_playing(_ctx, state) do
-    {[start_timer: {:timer, :no_interval}, demand: {:input, 1}], state}
+    maybe_start_timer = if not state.start_on_first_buffer?, do: [start_timer: {:timer, :no_interval}], else: []
+    {maybe_start_timer++[demand: {:input, 1}], state}
+  end
+
+  @impl true
+  def handle_start_of_stream(:input, _ctx, state) do
+    maybe_start_timer = if state.start_on_first_buffer?, do: [start_timer: {:timer, :no_interval}], else: []
+    {maybe_start_timer, state}
   end
 
   @impl true
@@ -38,7 +51,6 @@ defmodule Membrane.Realtimer do
       | previous_timestamp: Buffer.get_dts_or_pts(buffer),
         tick_actions: [buffer: {:output, buffer}] ++ state.tick_actions
     }
-
     {[timer_interval: {:timer, interval}], state}
   end
 
