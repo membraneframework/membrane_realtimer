@@ -3,14 +3,12 @@ defmodule Membrane.Realtimer do
   Sends buffers to the output in real time, according to buffers' timestamps.
 
   If buffers come in slower than realtime, they're sent as they come in.
+
+  It can be reseted by sending `%#{inspect(__MODULE__)}.Events.Reset{}` event on its input pad.
   """
   use Membrane.Filter
 
-  defmodule ResetEvent do
-    @derive Membrane.EventProtocol
-    defstruct []
-  end
-
+  alias __MODULE__.Events
   alias Membrane.Buffer
 
   def_input_pad :input, accepted_format: _any, flow_control: :manual, demand_unit: :buffers
@@ -50,16 +48,16 @@ defmodule Membrane.Realtimer do
   end
 
   @impl true
-  def handle_event(:input, %ResetEvent{}, _ctx, state) do
+  def handle_event(:input, %Events.Reset{}, _ctx, state) do
     {actions, state} =
-      cond do
-        state.tick_actions == [] and state.timer_status == :to_be_started ->
+      case state.tick_actions do
+        [] when state.timer_status == :to_be_started ->
           {[], state}
 
-        state.tick_actions == [] and state.timer_status == :running ->
+        [] when state.timer_status == :running ->
           {[stop_timer: :timer], %{state | timer_status: :to_be_started}}
 
-        state.tick_actions != [] ->
+        _many ->
           {[], %{state | timer_status: :to_be_restarted}}
       end
 
@@ -109,6 +107,7 @@ defmodule Membrane.Realtimer do
         :running -> {[], state}
       end
 
+    state =
     {actions ++ maybe_stop_timer, %{state | tick_actions: []}}
   end
 end
