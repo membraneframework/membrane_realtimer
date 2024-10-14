@@ -4,7 +4,7 @@ defmodule Membrane.Realtimer do
 
   If buffers come in slower than realtime, they're sent as they come in.
 
-  It can be reseted by sending `%#{inspect(__MODULE__)}.Events.Reset{}` event on its input pad.
+  It can be reset by sending `%#{inspect(__MODULE__)}.Events.Reset{}` event on its input pad.
   """
   use Membrane.Filter
 
@@ -58,7 +58,7 @@ defmodule Membrane.Realtimer do
           {[stop_timer: :timer], %{state | timer_status: :to_be_started}}
 
         _many ->
-          {[], %{state | timer_status: :to_be_restarted}}
+          {[], %{state | timer_status: :to_be_stopped}}
       end
 
     {actions, %{state | previous_timestamp: nil}}
@@ -103,11 +103,10 @@ defmodule Membrane.Realtimer do
 
     {maybe_stop_timer, state} =
       case state.timer_status do
-        :to_be_restarted -> {[stop_timer: :timer], %{state | timer_status: :to_be_started}}
+        :to_be_stopped -> {[stop_timer: :timer], %{state | timer_status: :to_be_started}}
         :running -> {[], state}
       end
 
-    state =
     {actions ++ maybe_stop_timer, %{state | tick_actions: []}}
   end
 end
