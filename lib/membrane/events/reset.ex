@@ -1,4 +1,3 @@
-
 defmodule Membrane.Realtimer.Events.Reset do
   @moduledoc """
   Event, that resets `Membrane.Realtimer`.
