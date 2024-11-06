@@ -96,10 +96,11 @@ defmodule Membrane.Realtimer do
   end
 
   @impl true
-  def handle_tick(:timer, _ctx, state) do
+  def handle_tick(:timer, ctx, state) do
     actions =
       [timer_interval: {:timer, :no_interval}] ++
-        Enum.reverse(state.tick_actions) ++ [demand: {:input, 1}]
+        Enum.reverse(state.tick_actions) ++
+        if ctx.pads.input.end_of_stream?, do: [], else: [demand: {:input, 1}]
 
     {maybe_stop_timer, state} =
       case state.timer_status do
